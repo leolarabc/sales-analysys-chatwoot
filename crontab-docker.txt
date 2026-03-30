@@ -1,0 +1,12 @@
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+PYTHONPATH=/app
+
+# Dashboard Comercial (8h, 12h, 17h)
+0 8,12,17 * * * root python3 /app/collectors/comercial.py >> /proc/1/fd/1 2>&1
+
+# Chatwoot Leads (8h05, 12h05, 17h05)
+5 8,12,17 * * * root python3 /app/collectors/chatwoot_leads.py >> /proc/1/fd/1 2>&1
+
+# ConversaScore Diário (6h)
+0 6 * * * root python3 /app/collectors/scoring.py >> /proc/1/fd/1 2>&1

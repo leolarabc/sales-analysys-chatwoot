@@ -1,0 +1,20 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y --no-install-recommends cron && rm -rf /var/lib/apt/lists/*
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY collectors/ collectors/
+COPY utils/ utils/
+COPY crontab-docker.txt /etc/cron.d/boatebus
+
+RUN chmod 0644 /etc/cron.d/boatebus \
+    && touch /var/log/cron.log
+
+ENV PYTHONPATH=/app
+
+# cron -f mantém o processo em foreground (PID 1 do container)
+CMD ["cron", "-f"]

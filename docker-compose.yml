@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+
+  # ── Dashboard estático (nginx) ─────────────────────────────
+  central-dashboard:
+    image: nginx:alpine
+    volumes:
+      - /home/your-project:/usr/share/nginx/html:ro
+    networks:
+      - net
+    deploy:
+      replicas: 1
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.central-dashboard.rule=Host(`dashboard.yourdomain.com`)"
+        - "traefik.http.routers.central-dashboard.entrypoints=websecure"
+        - "traefik.http.routers.central-dashboard.tls.certresolver=letsencrypt"
+        - "traefik.http.services.central-dashboard.loadbalancer.server.port=80"
+
+  # ── Webhook FastAPI (recebe eventos Chatwoot em tempo real) ─
+  # URL: https://webhook.yourdomain.com/conversascore-webhook
+  # PathPrefix(/conversascore-webhook) evita conflito com n8n (/webhook/*)
+  central-webhook:
+    image: boatebus-webhook:latest
+    volumes:
+      - /home/your-project/.env:/app/.env:ro
+    networks:
+      - net
+    deploy:
+      replicas: 1
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.central-webhook.rule=Host(`webhook.yourdomain.com`) && PathPrefix(`/conversascore-webhook`)"
+        - "traefik.http.routers.central-webhook.priority=10"
+        - "traefik.http.routers.central-webhook.entrypoints=websecure"
+        - "traefik.http.routers.central-webhook.tls.certresolver=letsencrypt"
+        - "traefik.http.services.central-webhook.loadbalancer.server.port=8000"
+
+  # ── Cron (coleta dados nos horários agendados) ─────────────
+  # Acessa PostgreSQL via rede overlay (PG_HOST=postgres)
+  # Escreve os JSONs nos diretórios do host via volume bind
+  central-cron:
+    image: boatebus-cron:latest
+    volumes:
+      - /home/your-project/.env:/app/.env:ro
+      - /home/your-project:/home/your-project
+      - /home/your-legacy-dashboard:/home/your-legacy-dashboard
+    networks:
+      - net
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+
+networks:
+  net:
+    external: true

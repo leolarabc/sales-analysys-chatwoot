@@ -1,0 +1,1400 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BoateBus · Central de Inteligência</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@400;500&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080c10;
+    --surface: #0e1419;
+    --surface2: #141c24;
+    --surface3: #1a2332;
+    --border: rgba(255,255,255,0.06);
+    --border-hover: rgba(255,255,255,0.12);
+    --gold: #f0b429;
+    --gold-dim: rgba(240,180,41,0.12);
+    --green: #34d399;
+    --green-dim: rgba(52,211,153,0.12);
+    --red: #f87171;
+    --red-dim: rgba(248,113,113,0.12);
+    --yellow: #fbbf24;
+    --yellow-dim: rgba(251,191,36,0.12);
+    --text: #f0f4f8;
+    --muted: #64748b;
+    --accent: #3b82f6;
+    --accent-dim: rgba(59,130,246,0.12);
+    --purple: #a78bfa;
+    --purple-dim: rgba(167,139,250,0.12);
+    --cyan: #22d3ee;
+    --cyan-dim: rgba(34,211,238,0.12);
+    --sidebar-w: 260px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    display: flex;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  /* ══════════════════════════════════════════════
+     SIDEBAR
+     ══════════════════════════════════════════════ */
+  .sidebar {
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    width: var(--sidebar-w);
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  .sidebar-brand {
+    padding: 24px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .sidebar-brand-icon {
+    width: 38px; height: 38px;
+    background: var(--gold);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  .sidebar-brand-text { font-size: 18px; font-weight: 800; letter-spacing: -0.5px; }
+  .sidebar-brand-sub {
+    font-size: 10px; color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 1px; text-transform: uppercase; margin-top: 1px;
+  }
+
+  .sidebar-nav {
+    flex: 1;
+    padding: 16px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    overflow-y: auto;
+  }
+
+  .sidebar-section-label {
+    font-size: 9px;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 16px 12px 8px;
+    opacity: 0.7;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    transition: all 0.2s;
+    border: 1px solid transparent;
+    position: relative;
+    user-select: none;
+  }
+  .nav-item:hover { background: var(--surface2); color: var(--text); }
+  .nav-item.active {
+    background: var(--gold-dim);
+    color: var(--gold);
+    border-color: rgba(240,180,41,0.15);
+  }
+  .nav-item.active::before {
+    content: '';
+    position: absolute;
+    left: -12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 24px;
+    background: var(--gold);
+    border-radius: 0 4px 4px 0;
+  }
+  .nav-icon { font-size: 18px; width: 24px; text-align: center; flex-shrink: 0; }
+  .nav-label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .nav-badge {
+    margin-left: auto;
+    font-size: 10px;
+    font-family: 'DM Mono', monospace;
+    padding: 2px 8px;
+    border-radius: 99px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    flex-shrink: 0;
+  }
+  .nav-badge.soon {
+    background: rgba(251,191,36,0.08);
+    border-color: rgba(251,191,36,0.2);
+    color: var(--yellow);
+  }
+
+  .sidebar-footer {
+    padding: 16px 20px;
+    border-top: 1px solid var(--border);
+    font-size: 10px;
+    font-family: 'DM Mono', monospace;
+    color: var(--muted);
+    opacity: 0.6;
+  }
+
+  /* ══════════════════════════════════════════════
+     MOBILE TOGGLE
+     ══════════════════════════════════════════════ */
+  .mobile-toggle {
+    display: none;
+    position: fixed;
+    top: 16px; left: 16px;
+    z-index: 200;
+    width: 42px; height: 42px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    align-items: center; justify-content: center;
+    cursor: pointer;
+    font-size: 20px;
+    color: var(--text);
+  }
+  .mobile-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 99;
+  }
+
+  /* ══════════════════════════════════════════════
+     MAIN CONTENT
+     ══════════════════════════════════════════════ */
+  .main-wrapper {
+    margin-left: var(--sidebar-w);
+    flex: 1;
+    min-height: 100vh;
+    position: relative;
+    z-index: 1;
+  }
+
+  .page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px 40px;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(180deg, rgba(240,180,41,0.03) 0%, transparent 100%);
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .page-title-area {}
+  .page-title {
+    font-size: 20px; font-weight: 800; letter-spacing: -0.5px;
+  }
+  .page-subtitle {
+    font-size: 11px; color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.5px; margin-top: 4px;
+  }
+  .page-header-right { display: flex; align-items: center; gap: 12px; }
+  .update-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted);
+    background: var(--surface); border: 1px solid var(--border);
+    padding: 6px 12px; border-radius: 20px;
+  }
+  .update-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--green); animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  .page-content {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 32px 40px;
+  }
+
+  /* ══════════════════════════════════════════════
+     SHARED COMPONENTS
+     ══════════════════════════════════════════════ */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* KPI Cards */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 28px;
+    animation: fadeUp 0.5s ease both;
+  }
+  .kpi-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .kpi-card:hover { border-color: var(--border-hover); transform: translateY(-2px); }
+  .kpi-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0;
+    height: 2px; opacity: 0; transition: opacity 0.2s;
+  }
+  .kpi-card:hover::before { opacity: 1; }
+  .kpi-card.gold-accent::before  { background: var(--gold); }
+  .kpi-card.green-accent::before { background: var(--green); opacity: 1; }
+  .kpi-card.green-accent { border-color: rgba(52,211,153,0.15); }
+  .kpi-card.red-accent::before   { background: var(--red); opacity: 1; }
+  .kpi-card.red-accent { border-color: rgba(248,113,113,0.15); }
+  .kpi-card.accent-accent::before { background: var(--accent); opacity: 1; }
+  .kpi-card.accent-accent { border-color: rgba(59,130,246,0.15); }
+  .kpi-card.purple-accent::before { background: var(--purple); opacity: 1; }
+  .kpi-card.purple-accent { border-color: rgba(167,139,250,0.15); }
+  .kpi-card.cyan-accent::before { background: var(--cyan); opacity: 1; }
+  .kpi-card.cyan-accent { border-color: rgba(34,211,238,0.15); }
+
+  .kpi-label {
+    font-size: 11px; color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 1px; text-transform: uppercase; margin-bottom: 12px;
+  }
+  .kpi-value {
+    font-size: clamp(16px, 1.8vw, 26px);
+    font-weight: 800; letter-spacing: -0.3px; line-height: 1.2;
+    color: var(--text); white-space: nowrap; overflow: hidden;
+    text-overflow: ellipsis; font-family: 'Bebas Neue', sans-serif;
+  }
+  .kpi-value.gold   { color: var(--gold); }
+  .kpi-value.green  { color: var(--green); }
+  .kpi-value.red    { color: var(--red); }
+  .kpi-value.accent { color: var(--accent); }
+  .kpi-value.purple { color: var(--purple); }
+  .kpi-value.cyan   { color: var(--cyan); }
+  .kpi-sub { font-size: 12px; color: var(--muted); margin-top: 6px; font-family: 'DM Mono', monospace; }
+  .kpi-icon {
+    position: absolute; top: 16px; right: 16px;
+    font-size: 20px; opacity: 0.1; pointer-events: none;
+  }
+
+  /* Section Card */
+  .section-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 16px; overflow: hidden;
+    animation: fadeUp 0.5s ease both; margin-bottom: 28px;
+  }
+  .section-header {
+    padding: 22px 28px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 8px;
+  }
+  .section-title {
+    font-size: 14px; font-weight: 700; letter-spacing: 0.5px;
+    text-transform: uppercase; color: var(--muted); font-family: 'DM Mono', monospace;
+  }
+  .section-badge {
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    padding: 4px 12px; border-radius: 99px;
+    background: var(--surface2); border: 1px solid var(--border); color: var(--muted);
+  }
+
+  /* Meta Section */
+  .meta-section {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 16px; padding: 28px; margin-bottom: 28px;
+    animation: fadeUp 0.5s ease 0.1s both;
+  }
+  .meta-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; flex-wrap: wrap; gap: 16px; }
+  .meta-title {
+    font-size: 14px; font-weight: 700; letter-spacing: 0.5px;
+    text-transform: uppercase; color: var(--muted); font-family: 'DM Mono', monospace;
+  }
+  .meta-valores { display: flex; gap: 32px; flex-wrap: wrap; }
+  .meta-item { text-align: right; }
+  .meta-item-label {
+    font-size: 11px; color: var(--muted); font-family: 'DM Mono', monospace;
+    letter-spacing: 1px; text-transform: uppercase;
+  }
+  .meta-item-value {
+    font-size: clamp(16px, 1.8vw, 26px); font-weight: 800;
+    letter-spacing: -0.5px; white-space: nowrap; font-family: 'Bebas Neue', sans-serif;
+  }
+  .progress-track {
+    height: 10px; background: var(--surface2);
+    border-radius: 99px; overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%; border-radius: 99px;
+    background: linear-gradient(90deg, var(--gold), #f59e0b);
+    transition: width 1s cubic-bezier(0.4,0,0.2,1); position: relative;
+  }
+  .progress-fill::after {
+    content: ''; position: absolute; right: 0; top: 0; bottom: 0; width: 60px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3));
+    border-radius: 99px; animation: shimmer 2s infinite;
+  }
+  @keyframes shimmer { 0% { opacity: 0; } 50% { opacity: 1; } 100% { opacity: 0; } }
+  .progress-fill.green { background: linear-gradient(90deg, var(--green), #10b981); }
+  .progress-fill.red   { background: linear-gradient(90deg, var(--red), #ef4444); }
+  .progress-labels {
+    display: flex; justify-content: space-between; margin-top: 10px;
+    font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted);
+  }
+  .progress-pct { font-weight: 700; color: var(--gold); }
+  .meta-pills { display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap; }
+  .pill {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 99px; padding: 6px 14px;
+    font-size: 12px; font-family: 'DM Mono', monospace;
+  }
+  .pill-dot { width: 6px; height: 6px; border-radius: 50%; }
+  .pill-dot.green  { background: var(--green); }
+  .pill-dot.yellow { background: var(--yellow); }
+  .pill-dot.red    { background: var(--red); }
+  .pill-dot.accent { background: var(--accent); }
+  .pill-dot.purple { background: var(--purple); }
+
+  /* Tables */
+  table { width: 100%; border-collapse: collapse; }
+  thead tr { background: var(--surface2); }
+  thead th {
+    padding: 12px 28px; text-align: left;
+    font-size: 10px; font-family: 'DM Mono', monospace;
+    letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--muted); font-weight: 500;
+  }
+  thead th.right { text-align: right; }
+  thead th.center { text-align: center; }
+  tbody tr { border-top: 1px solid var(--border); transition: background 0.15s; }
+  tbody tr:hover { background: var(--surface2); }
+  tbody td { padding: 16px 28px; font-size: 14px; }
+  tbody td.right { text-align: right; }
+  tbody td.center { text-align: center; }
+
+  .vendedor-name { font-weight: 700; font-size: 15px; }
+  .vendedor-festas { font-family: 'DM Mono', monospace; color: var(--muted); font-size: 13px; }
+  .valor-cell { font-family: 'DM Mono', monospace; font-weight: 500; font-size: 15px; }
+  .valor-green { color: var(--green); }
+  .valor-red { color: var(--red); }
+  .valor-accent { color: var(--accent); }
+
+  .mini-bar-wrap { display: flex; align-items: center; gap: 10px; min-width: 160px; }
+  .mini-bar-track { flex: 1; height: 6px; background: var(--surface2); border-radius: 99px; overflow: hidden; }
+  .mini-bar-fill { height: 100%; border-radius: 99px; transition: width 1s cubic-bezier(0.4,0,0.2,1); }
+  .pct-label { font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 700; min-width: 44px; text-align: right; }
+  .apoio-badge {
+    font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted);
+    background: var(--surface2); border: 1px solid var(--border);
+    padding: 3px 10px; border-radius: 99px;
+  }
+
+  /* Comissões */
+  .comissao-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; padding: 24px 28px; }
+  .comissao-card {
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 14px; padding: 20px;
+    position: relative; overflow: hidden;
+  }
+  .comissao-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0;
+    height: 2px; background: linear-gradient(90deg, var(--gold), var(--purple));
+  }
+  .comissao-nome { font-size: 16px; font-weight: 700; margin-bottom: 16px; }
+  .comissao-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px;
+  }
+  .comissao-row:last-child { border-bottom: none; }
+  .comissao-row-label { color: var(--muted); font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.5px; text-transform: uppercase; }
+  .comissao-row-val { font-family: 'DM Mono', monospace; font-weight: 600; }
+  .comissao-total-row {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 14px; padding-top: 14px; border-top: 1px solid rgba(240,180,41,0.2);
+  }
+  .comissao-total-label { font-size: 12px; color: var(--muted); font-family: 'DM Mono', monospace; text-transform: uppercase; letter-spacing: 0.5px; }
+  .comissao-total-val { font-size: 24px; font-weight: 800; color: var(--gold); font-family: 'Bebas Neue', sans-serif; }
+  .bonus-info {
+    margin: 0 28px 20px; padding: 14px 18px;
+    background: rgba(167,139,250,0.06); border: 1px solid rgba(167,139,250,0.15);
+    border-radius: 10px; display: flex; align-items: center; gap: 12px;
+    font-size: 13px; font-family: 'DM Mono', monospace; color: var(--purple);
+  }
+
+  /* Inadimplentes */
+  .sem-pgto-badge {
+    font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 700;
+    background: var(--red-dim); color: var(--red);
+    border: 1px solid rgba(248,113,113,0.25);
+    padding: 2px 8px; border-radius: 99px; white-space: nowrap;
+  }
+  .pendente-val { color: var(--red); font-family: 'DM Mono', monospace; font-weight: 600; }
+  .pago-val     { color: var(--green); font-family: 'DM Mono', monospace; font-size: 13px; }
+  .evento-titulo { font-size: 13px; color: var(--muted); margin-top: 2px; }
+
+  /* Alert */
+  .alert-bar {
+    margin-bottom: 28px; border-radius: 12px; padding: 14px 20px;
+    display: flex; align-items: center; gap: 12px;
+    font-size: 13px; font-family: 'DM Mono', monospace;
+    animation: fadeUp 0.5s ease 0.05s both;
+  }
+  .alert-bar.red    { background: var(--red-dim); border: 1px solid rgba(248,113,113,0.2); color: #fca5a5; }
+  .alert-bar.yellow { background: var(--yellow-dim); border: 1px solid rgba(251,191,36,0.2); color: #fde68a; }
+  .alert-bar.green  { background: var(--green-dim); border: 1px solid rgba(52,211,153,0.2); color: #6ee7b7; }
+
+  /* Score Components */
+  .score-circle {
+    width: 120px; height: 120px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Bebas Neue', sans-serif; font-size: 42px; font-weight: 800;
+    position: relative;
+  }
+  .score-circle::before {
+    content: ''; position: absolute; inset: 4px; border-radius: 50%;
+    background: var(--surface);
+  }
+  .score-circle span { position: relative; z-index: 1; }
+  .score-excellent { background: conic-gradient(var(--green) calc(var(--pct) * 3.6deg), var(--surface2) 0); color: var(--green); }
+  .score-good { background: conic-gradient(var(--accent) calc(var(--pct) * 3.6deg), var(--surface2) 0); color: var(--accent); }
+  .score-average { background: conic-gradient(var(--yellow) calc(var(--pct) * 3.6deg), var(--surface2) 0); color: var(--yellow); }
+  .score-poor { background: conic-gradient(var(--red) calc(var(--pct) * 3.6deg), var(--surface2) 0); color: var(--red); }
+
+  .score-bar-row {
+    display: flex; align-items: center; gap: 12px; padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .score-bar-row:last-child { border-bottom: none; }
+  .score-bar-label { font-size: 12px; font-family: 'DM Mono', monospace; color: var(--muted); min-width: 140px; }
+  .score-bar-track { flex: 1; height: 8px; background: var(--surface2); border-radius: 99px; overflow: hidden; }
+  .score-bar-fill { height: 100%; border-radius: 99px; transition: width 0.8s ease; }
+  .score-bar-val { font-size: 13px; font-family: 'DM Mono', monospace; font-weight: 700; min-width: 36px; text-align: right; }
+
+  /* Funil */
+  .funnel-container { padding: 28px; }
+  .funnel-step {
+    display: flex; align-items: center; gap: 16px; margin-bottom: 8px;
+  }
+  .funnel-bar-wrap { flex: 1; position: relative; }
+  .funnel-bar {
+    height: 40px;
+    border-radius: 8px;
+    display: flex; align-items: center; padding: 0 16px;
+    font-size: 13px; font-weight: 700; font-family: 'DM Mono', monospace;
+    transition: width 1s cubic-bezier(0.4,0,0.2,1);
+    position: relative;
+  }
+  .funnel-label {
+    min-width: 180px; font-size: 12px; font-family: 'DM Mono', monospace;
+    color: var(--muted);
+  }
+  .funnel-value { margin-left: auto; }
+  .funnel-pct {
+    min-width: 60px; text-align: right;
+    font-size: 12px; font-family: 'DM Mono', monospace; color: var(--muted);
+  }
+
+  /* Placeholder Page */
+  .placeholder-page {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    min-height: 50vh; gap: 20px; text-align: center;
+  }
+  .placeholder-icon { font-size: 64px; opacity: 0.3; }
+  .placeholder-title { font-size: 20px; font-weight: 800; color: var(--muted); }
+  .placeholder-desc {
+    font-size: 13px; font-family: 'DM Mono', monospace;
+    color: var(--muted); max-width: 400px; line-height: 1.8; opacity: 0.7;
+  }
+  .placeholder-badge {
+    font-size: 11px; font-family: 'DM Mono', monospace;
+    padding: 6px 16px; border-radius: 99px;
+    background: var(--yellow-dim); border: 1px solid rgba(251,191,36,0.2);
+    color: var(--yellow);
+  }
+
+  /* Loading / Error */
+  .loading {
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; min-height: 40vh; gap: 20px;
+    color: var(--muted); font-family: 'DM Mono', monospace; font-size: 13px;
+  }
+  .spinner {
+    width: 36px; height: 36px; border: 3px solid var(--border);
+    border-top-color: var(--gold); border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .error-box {
+    background: var(--red-dim); border: 1px solid rgba(248,113,113,0.2);
+    border-radius: 12px; padding: 24px; text-align: center;
+    max-width: 480px; margin: 40px auto;
+    font-family: 'DM Mono', monospace; font-size: 13px; color: #fca5a5; line-height: 1.8;
+  }
+
+  /* Empty State */
+  .empty-state {
+    padding: 40px; text-align: center;
+    color: var(--muted); font-family: 'DM Mono', monospace; font-size: 13px;
+  }
+
+  /* Two column layout */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    margin-bottom: 28px;
+  }
+
+  /* ══════════════════════════════════════════════
+     RESPONSIVE
+     ══════════════════════════════════════════════ */
+  @media (max-width: 1024px) {
+    .sidebar { transform: translateX(-100%); }
+    .sidebar.open { transform: translateX(0); }
+    .mobile-toggle { display: flex; }
+    .mobile-overlay.open { display: block; }
+    .main-wrapper { margin-left: 0; }
+    .page-header { padding: 24px 24px 24px 70px; }
+    .page-content { padding: 24px; }
+    .grid-2 { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 600px) {
+    .kpi-grid { grid-template-columns: 1fr 1fr; }
+    .meta-valores { flex-direction: column; gap: 8px; }
+    thead th:nth-child(n+4), tbody td:nth-child(n+4) { display: none; }
+    .funnel-label { min-width: 100px; font-size: 10px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Mobile Toggle -->
+<button class="mobile-toggle" onclick="toggleSidebar()">☰</button>
+<div class="mobile-overlay" id="mobileOverlay" onclick="toggleSidebar()"></div>
+
+<!-- Sidebar -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <div class="sidebar-brand-icon">🚌</div>
+    <div>
+      <div class="sidebar-brand-text">BoateBus</div>
+      <div class="sidebar-brand-sub">Central de Inteligência</div>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="sidebar-section-label">Vendas</div>
+    <div class="nav-item active" data-page="comercial" onclick="navigate('comercial')">
+      <span class="nav-icon">📊</span>
+      <span class="nav-label">Comercial</span>
+    </div>
+
+    <div class="sidebar-section-label">Atendimento</div>
+    <div class="nav-item" data-page="chatwoot" onclick="navigate('chatwoot')">
+      <span class="nav-icon">💬</span>
+      <span class="nav-label">Chatwoot Leads</span>
+    </div>
+    <div class="nav-item" data-page="score" onclick="navigate('score')">
+      <span class="nav-icon">🎯</span>
+      <span class="nav-label">ConversaScore</span>
+    </div>
+
+    <div class="sidebar-section-label">Marketing</div>
+    <div class="nav-item" data-page="ads" onclick="navigate('ads')">
+      <span class="nav-icon">📣</span>
+      <span class="nav-label">Meta Ads</span>
+      <span class="nav-badge soon">em breve</span>
+    </div>
+    <div class="nav-item" data-page="organico" onclick="navigate('organico')">
+      <span class="nav-icon">📸</span>
+      <span class="nav-label">Orgânico Social</span>
+      <span class="nav-badge soon">em breve</span>
+    </div>
+  </nav>
+
+  <div class="sidebar-footer">
+    TenX Marketing Hub · v2.0
+  </div>
+</aside>
+
+<!-- Main Content -->
+<div class="main-wrapper">
+  <div class="page-header">
+    <div class="page-title-area">
+      <div class="page-title" id="pageTitle">Dashboard Comercial</div>
+      <div class="page-subtitle" id="pageSubtitle"></div>
+    </div>
+    <div class="page-header-right">
+      <div class="update-badge">
+        <div class="update-dot"></div>
+        <span id="last-update">Carregando...</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-content" id="pageContent">
+    <div class="loading">
+      <div class="spinner"></div>
+      <span>Carregando dados...</span>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ══════════════════════════════════════════════
+   GLOBALS & HELPERS
+   ══════════════════════════════════════════════ */
+const fmt = (n) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 2 }).format(n || 0);
+const fmtNum = (n) => new Intl.NumberFormat('pt-BR').format(n || 0);
+const pct = (n) => (n || 0).toFixed(1) + '%';
+const fmtDate = (s) => {
+  if (!s) return '—';
+  const d = new Date(s);
+  return d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+};
+const fmtTime = (mins) => {
+  if (!mins && mins !== 0) return '—';
+  if (mins < 1) return '< 1 min';
+  if (mins < 60) return `${Math.round(mins)} min`;
+  const h = Math.floor(mins / 60);
+  const m = Math.round(mins % 60);
+  return `${h}h${m > 0 ? ` ${m}min` : ''}`;
+};
+const MESES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+function statusColor(cor) {
+  if (cor === 'green') return '#34d399';
+  if (cor === 'yellow') return '#fbbf24';
+  return '#f87171';
+}
+function scoreClass(score) {
+  if (score >= 80) return 'score-excellent';
+  if (score >= 60) return 'score-good';
+  if (score >= 40) return 'score-average';
+  return 'score-poor';
+}
+function scoreColor(score) {
+  if (score >= 80) return 'var(--green)';
+  if (score >= 60) return 'var(--accent)';
+  if (score >= 40) return 'var(--yellow)';
+  return 'var(--red)';
+}
+
+let currentPage = 'comercial';
+let dataCache = {};
+
+/* ══════════════════════════════════════════════
+   NAVIGATION
+   ══════════════════════════════════════════════ */
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('mobileOverlay').classList.toggle('open');
+}
+
+function navigate(page) {
+  currentPage = page;
+
+  // Update nav
+  document.querySelectorAll('.nav-item').forEach(el => {
+    el.classList.toggle('active', el.dataset.page === page);
+  });
+
+  // Close mobile sidebar
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('mobileOverlay').classList.remove('open');
+
+  // Update header
+  const titles = {
+    comercial: ['Dashboard Comercial', ''],
+    chatwoot: ['Chatwoot Leads', 'Atendimento e conversão de leads'],
+    score: ['ConversaScore', 'Análise de qualidade do atendimento'],
+    ads: ['Meta Ads', 'Performance de campanhas pagas'],
+    organico: ['Orgânico Social', 'Análise de posts e engajamento']
+  };
+  document.getElementById('pageTitle').textContent = titles[page][0];
+  document.getElementById('pageSubtitle').textContent = titles[page][1];
+
+  // Render page
+  renderPage(page);
+}
+
+async function renderPage(page) {
+  const el = document.getElementById('pageContent');
+  el.innerHTML = '<div class="loading"><div class="spinner"></div><span>Carregando dados...</span></div>';
+
+  try {
+    switch(page) {
+      case 'comercial': await renderComercial(el); break;
+      case 'chatwoot':  await renderChatwoot(el); break;
+      case 'score':     await renderScore(el); break;
+      case 'ads':       renderAdsPlaceholder(el); break;
+      case 'organico':  renderOrganicoPlaceholder(el); break;
+    }
+  } catch(err) {
+    el.innerHTML = `<div class="error-box">❌ Erro ao carregar: ${err.message}</div>`;
+  }
+}
+
+async function loadJSON(file) {
+  const res = await fetch(file + '?t=' + Date.now());
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  const data = await res.json();
+  dataCache[file] = data;
+  return data;
+}
+
+/* ══════════════════════════════════════════════
+   PAGE 1: COMERCIAL
+   ══════════════════════════════════════════════ */
+function alertMsg(data) {
+  const { percentualMeta, deficit, necessarioPorDia, projecao } = data.meta;
+  if (percentualMeta >= 100) return { cls: 'green', msg: `✅ Meta atingida! Faturamento atual supera ${fmt(data.meta.valor)}.` };
+  if (deficit >= 0) return { cls: 'green', msg: `📈 Projeção de ${fmt(projecao)} (+${fmt(deficit)} acima da meta). Ritmo atual é suficiente!` };
+  return {
+    cls: Math.abs(deficit) < 20000 ? 'yellow' : 'red',
+    msg: `⚠ Projeção de ${fmt(projecao)} — ${pct(percentualMeta)} da meta. Necessário ${fmt(necessarioPorDia)}/dia útil para recuperar.`
+  };
+}
+
+function renderVendedoresTable(vendedores) {
+  return vendedores.map(v => {
+    const pctVal = v.percentualMeta ?? null;
+    const cor = pctVal === null ? '#64748b' : pctVal >= 100 ? '#34d399' : pctVal >= 50 ? '#fbbf24' : '#f87171';
+    const barWidth = pctVal !== null ? Math.min(pctVal, 100) : 0;
+    return `
+      <tr>
+        <td><div class="vendedor-name">${v.nome}</div></td>
+        <td class="vendedor-festas">${v.festas} festas</td>
+        <td class="valor-cell">${fmt(v.faturamento)}</td>
+        <td class="valor-cell valor-green">${fmt(v.faturamentoPago)}</td>
+        <td class="valor-cell" style="color:var(--muted)">${fmt(v.ticketMedio)}</td>
+        <td>
+          ${pctVal !== null ? `
+            <div class="mini-bar-wrap">
+              <div class="mini-bar-track">
+                <div class="mini-bar-fill" style="width:${barWidth}%;background:${cor}"></div>
+              </div>
+              <span class="pct-label" style="color:${cor}">${pct(pctVal)}</span>
+            </div>
+          ` : '<span class="apoio-badge">apoio</span>'}
+        </td>
+      </tr>`;
+  }).join('');
+}
+
+function renderComissoes(comissoes) {
+  if (!comissoes || !comissoes.vendedores || comissoes.vendedores.length === 0) return '';
+  const bonusInfo = comissoes.bonusGlobal > 0
+    ? `<div class="bonus-info">🏆 Bônus global ativo: <strong>${fmt(comissoes.bonusGlobal)}</strong> por vendedor — faturamento pago total: <strong>${fmt(comissoes.faturamentoPagoTotal)}</strong></div>`
+    : `<div class="bonus-info" style="color:var(--muted);border-color:rgba(100,116,139,0.2);background:rgba(100,116,139,0.05);">💡 Bônus global ainda não atingido — faturamento pago atual: <strong>${fmt(comissoes.faturamentoPagoTotal)}</strong> (mín. R$ 100.000)</div>`;
+  const cards = comissoes.vendedores.map(v => `
+    <div class="comissao-card">
+      <div class="comissao-nome">${v.nome}</div>
+      <div class="comissao-row">
+        <span class="comissao-row-label">Fat. Pago</span>
+        <span class="comissao-row-val" style="color:var(--green)">${fmt(v.faturamentoPago)}</span>
+      </div>
+      <div class="comissao-row">
+        <span class="comissao-row-label">Faixa</span>
+        <span class="comissao-row-val" style="color:var(--yellow)">${v.percentualComissao.toFixed(2)}%</span>
+      </div>
+      <div class="comissao-row">
+        <span class="comissao-row-label">Comissão Individual</span>
+        <span class="comissao-row-val">${fmt(v.comissaoIndividual)}</span>
+      </div>
+      <div class="comissao-row">
+        <span class="comissao-row-label">Bônus Global</span>
+        <span class="comissao-row-val" style="color:var(--purple)">${fmt(v.bonus)}</span>
+      </div>
+      <div class="comissao-total-row">
+        <span class="comissao-total-label">Total a Receber</span>
+        <span class="comissao-total-val">${fmt(v.totalComissao)}</span>
+      </div>
+    </div>
+  `).join('');
+
+  return `
+    <div class="section-card" style="animation-delay:0.35s">
+      <div class="section-header">
+        <div class="section-title">💰 Comissões do Mês</div>
+        <span class="section-badge" style="color:var(--green);border-color:rgba(52,211,153,0.2);background:rgba(52,211,153,0.05);">Base: faturamento pago</span>
+      </div>
+      ${bonusInfo}
+      <div class="comissao-grid">${cards}</div>
+    </div>`;
+}
+
+function renderInadimplentes(inadimplentes) {
+  if (!inadimplentes || inadimplentes.length === 0) {
+    return `
+      <div class="section-card" style="animation-delay:0.45s">
+        <div class="section-header">
+          <div class="section-title">⚠️ Clientes com Pendências</div>
+          <span class="section-badge" style="color:var(--green);border-color:rgba(52,211,153,0.2);background:rgba(52,211,153,0.05);">0 pendências</span>
+        </div>
+        <div class="empty-state">✅ Todos os clientes estão em dia!</div>
+      </div>`;
+  }
+  const rows = inadimplentes.map(c => `
+    <tr>
+      <td>
+        <div class="vendedor-name">${c.clienteNome}</div>
+        <div class="evento-titulo">${c.eventoTitulo}</div>
+      </td>
+      <td style="font-family:'DM Mono',monospace;font-size:13px;">${c.telefone || '—'}</td>
+      <td style="font-family:'DM Mono',monospace;font-size:13px;">${fmtDate(c.dataEvento)}</td>
+      <td style="font-size:13px;color:var(--muted)">${c.vendedor}</td>
+      <td class="right pago-val">${fmt(c.valorPago)}</td>
+      <td class="right">
+        ${c.semPagamento
+          ? '<span class="sem-pgto-badge">Sem pagamento</span>'
+          : `<span class="pendente-val">${fmt(c.valorPendente)}</span>`}
+      </td>
+    </tr>`).join('');
+
+  return `
+    <div class="section-card" style="animation-delay:0.45s">
+      <div class="section-header">
+        <div class="section-title">⚠️ Clientes com Pendências</div>
+        <span class="section-badge" style="color:var(--red);border-color:rgba(248,113,113,0.2);background:rgba(248,113,113,0.06);">
+          ${inadimplentes.length} ${inadimplentes.length === 1 ? 'cliente' : 'clientes'}
+        </span>
+      </div>
+      <div style="overflow-x:auto">
+        <table>
+          <thead><tr>
+            <th>Cliente / Evento</th><th>Telefone</th><th>Data do Evento</th>
+            <th>Vendedor</th><th class="right">Valor Pago</th><th class="right">Valor Pendente</th>
+          </tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+    </div>`;
+}
+
+async function renderComercial(el) {
+  const data = await loadJSON('data.json');
+  const { kpis, meta, vendedores, periodo, atualizadoEm, comissoes, inadimplentes } = data;
+  const alert = alertMsg(data);
+  const d = new Date(atualizadoEm);
+  const updateStr = d.toLocaleString('pt-BR', { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' });
+
+  document.getElementById('last-update').textContent = `Atualizado: ${updateStr}`;
+  document.getElementById('pageSubtitle').textContent = `${MESES[periodo.mes - 1]} ${periodo.ano} · ${periodo.diasUteisRestantes} dias úteis restantes`;
+
+  const progressPct = Math.min(meta.percentualMeta, 100).toFixed(1);
+  const pctPago = kpis.faturamentoTotal > 0 ? (kpis.faturamentoPago / kpis.faturamentoTotal * 100).toFixed(0) : 0;
+
+  el.innerHTML = `
+    <div class="alert-bar ${alert.cls}">${alert.msg}</div>
+
+    <div class="kpi-grid">
+      <div class="kpi-card gold-accent"><div class="kpi-icon">💰</div>
+        <div class="kpi-label">Faturamento Total</div>
+        <div class="kpi-value gold">${fmt(kpis.faturamentoTotal)}</div>
+        <div class="kpi-sub">${periodo.diasUteisPassados} dias úteis</div>
+      </div>
+      <div class="kpi-card green-accent"><div class="kpi-icon">✅</div>
+        <div class="kpi-label">Faturamento Pago</div>
+        <div class="kpi-value green">${fmt(kpis.faturamentoPago)}</div>
+        <div class="kpi-sub">${pctPago}% do total recebido</div>
+      </div>
+      <div class="kpi-card"><div class="kpi-icon">🎉</div>
+        <div class="kpi-label">Festas Fechadas</div>
+        <div class="kpi-value">${kpis.totalFestas}</div>
+        <div class="kpi-sub">no período</div>
+      </div>
+      <div class="kpi-card"><div class="kpi-icon">🎯</div>
+        <div class="kpi-label">Ticket Médio</div>
+        <div class="kpi-value">${fmt(kpis.ticketMedio)}</div>
+        <div class="kpi-sub">por festa</div>
+      </div>
+      <div class="kpi-card"><div class="kpi-icon">📊</div>
+        <div class="kpi-label">Média Diária</div>
+        <div class="kpi-value">${fmt(kpis.mediaDiaria)}</div>
+        <div class="kpi-sub">dias úteis</div>
+      </div>
+    </div>
+
+    <div class="meta-section">
+      <div class="meta-header">
+        <div class="meta-title">Progresso da Meta Mensal</div>
+        <div class="meta-valores">
+          <div class="meta-item">
+            <div class="meta-item-label">Meta</div>
+            <div class="meta-item-value">${fmt(meta.valor)}</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-item-label">Projeção</div>
+            <div class="meta-item-value" style="color:${statusColor(meta.statusColor)}">${fmt(meta.projecao)}</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-item-label">${meta.deficit >= 0 ? 'Superávit' : 'Déficit'}</div>
+            <div class="meta-item-value" style="color:${meta.deficit >= 0 ? 'var(--green)' : 'var(--red)'}">${fmt(Math.abs(meta.deficit))}</div>
+          </div>
+        </div>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill ${meta.statusColor}" style="width:${progressPct}%"></div>
+      </div>
+      <div class="progress-labels">
+        <span>R$ 0</span>
+        <span class="progress-pct">${pct(meta.percentualMeta)} da meta</span>
+        <span>${fmt(meta.valor)}</span>
+      </div>
+      <div class="meta-pills">
+        <div class="pill"><div class="pill-dot yellow"></div><span>${periodo.diasUteisRestantes} dias úteis restantes</span></div>
+        <div class="pill"><div class="pill-dot ${meta.statusColor}"></div><span>Necessário ${fmt(meta.necessarioPorDia)}/dia para bater a meta</span></div>
+        <div class="pill"><div class="pill-dot green"></div><span>Ritmo atual ${fmt(kpis.mediaDiaria)}/dia</span></div>
+      </div>
+    </div>
+
+    <div class="section-card" style="animation-delay:0.2s">
+      <div class="section-header"><div class="section-title">Desempenho por Vendedor</div></div>
+      <div style="overflow-x:auto">
+        <table><thead><tr>
+          <th>Vendedor</th><th>Festas</th><th>Faturamento</th>
+          <th>Pago</th><th>Ticket Médio</th><th>% da Meta</th>
+        </tr></thead><tbody>${renderVendedoresTable(vendedores)}</tbody></table>
+      </div>
+    </div>
+
+    ${renderComissoes(comissoes)}
+    ${renderInadimplentes(inadimplentes)}
+  `;
+}
+
+/* ══════════════════════════════════════════════
+   PAGE 2: CHATWOOT LEADS
+   ══════════════════════════════════════════════ */
+async function renderChatwoot(el) {
+  let data;
+  try {
+    data = await loadJSON('chatwoot.json');
+  } catch(e) {
+    // Mostrar estado vazio com estrutura
+    data = null;
+  }
+
+  if (!data) {
+    el.innerHTML = `
+      <div class="alert-bar yellow">💬 Aguardando integração com Chatwoot. O workflow n8n precisa estar ativo para popular os dados.</div>
+
+      <div class="kpi-grid">
+        <div class="kpi-card accent-accent"><div class="kpi-icon">💬</div>
+          <div class="kpi-label">Total de Conversas</div>
+          <div class="kpi-value accent">—</div>
+          <div class="kpi-sub">aguardando dados</div>
+        </div>
+        <div class="kpi-card red-accent"><div class="kpi-icon">⏳</div>
+          <div class="kpi-label">Pendentes</div>
+          <div class="kpi-value red">—</div>
+          <div class="kpi-sub">aguardando resposta do vendedor</div>
+        </div>
+        <div class="kpi-card"><div class="kpi-icon">🚫</div>
+          <div class="kpi-label">Não Atendidos</div>
+          <div class="kpi-value">—</div>
+          <div class="kpi-sub">sem primeiro contato humano</div>
+        </div>
+        <div class="kpi-card green-accent"><div class="kpi-icon">⚡</div>
+          <div class="kpi-label">Tempo Médio 1ª Resposta</div>
+          <div class="kpi-value green">—</div>
+          <div class="kpi-sub">após handoff do bot</div>
+        </div>
+        <div class="kpi-card gold-accent"><div class="kpi-icon">🎯</div>
+          <div class="kpi-label">Taxa de Conversão</div>
+          <div class="kpi-value gold">—</div>
+          <div class="kpi-sub">leads → festas</div>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-title">📊 Desempenho por Vendedor</div>
+        </div>
+        <div class="empty-state">Os dados serão exibidos quando o workflow n8n estiver ativo e populando o arquivo chatwoot.json</div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-title">🔄 Funil de Conversão</div>
+        </div>
+        <div class="funnel-container">
+          <div class="empty-state">Funil será populado automaticamente com dados do Chatwoot + API de vendas BoateBus</div>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  // Render com dados reais
+  const { kpis, porVendedor, funil, periodo, atualizadoEm } = data;
+  const d = new Date(atualizadoEm);
+  document.getElementById('last-update').textContent = `Atualizado: ${d.toLocaleString('pt-BR', { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' })}`;
+
+  const taxaConversao = kpis.totalConversas > 0 ? ((kpis.convertidos / kpis.totalConversas) * 100) : 0;
+
+  el.innerHTML = `
+    <div class="kpi-grid">
+      <div class="kpi-card accent-accent"><div class="kpi-icon">💬</div>
+        <div class="kpi-label">Total de Conversas</div>
+        <div class="kpi-value accent">${fmtNum(kpis.totalConversas)}</div>
+        <div class="kpi-sub">no mês</div>
+      </div>
+      <div class="kpi-card red-accent"><div class="kpi-icon">⏳</div>
+        <div class="kpi-label">Pendentes</div>
+        <div class="kpi-value red">${fmtNum(kpis.pendentes)}</div>
+        <div class="kpi-sub">aguardando resposta</div>
+      </div>
+      <div class="kpi-card"><div class="kpi-icon">🚫</div>
+        <div class="kpi-label">Não Atendidos</div>
+        <div class="kpi-value">${fmtNum(kpis.naoAtendidos)}</div>
+        <div class="kpi-sub">sem contato humano</div>
+      </div>
+      <div class="kpi-card green-accent"><div class="kpi-icon">⚡</div>
+        <div class="kpi-label">Tempo Médio 1ª Resposta</div>
+        <div class="kpi-value green">${fmtTime(kpis.tempoMedioPrimeiraResposta)}</div>
+        <div class="kpi-sub">após handoff</div>
+      </div>
+      <div class="kpi-card gold-accent"><div class="kpi-icon">🎯</div>
+        <div class="kpi-label">Taxa de Conversão</div>
+        <div class="kpi-value gold">${pct(taxaConversao)}</div>
+        <div class="kpi-sub">${kpis.convertidos} festas de ${kpis.totalConversas} leads</div>
+      </div>
+    </div>
+
+    <!-- Tabela por vendedor -->
+    <div class="section-card" style="animation-delay:0.15s">
+      <div class="section-header"><div class="section-title">📊 Desempenho por Vendedor</div></div>
+      <div style="overflow-x:auto">
+        <table>
+          <thead><tr>
+            <th>Vendedor</th><th class="center">Atribuídas</th><th class="center">Pendentes</th>
+            <th class="center">Não Atendidas</th><th class="center">Tempo Médio</th>
+            <th class="center">Convertidas</th><th class="center">Taxa Conversão</th>
+          </tr></thead>
+          <tbody>${(porVendedor || []).map(v => `
+            <tr>
+              <td><div class="vendedor-name">${v.nome}</div></td>
+              <td class="center" style="font-family:'DM Mono',monospace;">${v.atribuidas}</td>
+              <td class="center"><span style="color:var(--red);font-family:'DM Mono',monospace;font-weight:600;">${v.pendentes}</span></td>
+              <td class="center"><span style="font-family:'DM Mono',monospace;">${v.naoAtendidas}</span></td>
+              <td class="center"><span style="color:var(--green);font-family:'DM Mono',monospace;">${fmtTime(v.tempoMedio)}</span></td>
+              <td class="center"><span style="font-family:'DM Mono',monospace;font-weight:600;">${v.convertidas}</span></td>
+              <td class="center">
+                <div class="mini-bar-wrap">
+                  <div class="mini-bar-track">
+                    <div class="mini-bar-fill" style="width:${Math.min(v.taxaConversao, 100)}%;background:${v.taxaConversao >= 30 ? 'var(--green)' : v.taxaConversao >= 15 ? 'var(--yellow)' : 'var(--red)'}"></div>
+                  </div>
+                  <span class="pct-label" style="color:${v.taxaConversao >= 30 ? 'var(--green)' : v.taxaConversao >= 15 ? 'var(--yellow)' : 'var(--red)'}">${pct(v.taxaConversao)}</span>
+                </div>
+              </td>
+            </tr>
+          `).join('')}</tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Funil -->
+    <div class="section-card" style="animation-delay:0.25s">
+      <div class="section-header"><div class="section-title">🔄 Funil de Conversão</div></div>
+      <div class="funnel-container">
+        ${(funil || []).map((step, i) => {
+          const maxVal = funil[0]?.valor || 1;
+          const widthPct = Math.max((step.valor / maxVal) * 100, 8);
+          const colors = ['var(--accent)', 'var(--cyan)', 'var(--purple)', 'var(--yellow)', 'var(--green)', 'var(--red)'];
+          const bgColors = ['var(--accent-dim)', 'var(--cyan-dim)', 'var(--purple-dim)', 'var(--yellow-dim)', 'var(--green-dim)', 'var(--red-dim)'];
+          return `
+            <div class="funnel-step">
+              <div class="funnel-label">${step.etapa}</div>
+              <div class="funnel-bar-wrap">
+                <div class="funnel-bar" style="width:${widthPct}%;background:${bgColors[i % bgColors.length]};color:${colors[i % colors.length]};">
+                  ${fmtNum(step.valor)}
+                </div>
+              </div>
+              <div class="funnel-pct">${i > 0 ? pct((step.valor / funil[i-1].valor) * 100) : '100%'}</div>
+            </div>`;
+        }).join('')}
+      </div>
+    </div>
+  `;
+}
+
+/* ══════════════════════════════════════════════
+   PAGE 3: CONVERSASCORE
+   ══════════════════════════════════════════════ */
+async function renderScore(el) {
+  let data;
+  try {
+    data = await loadJSON('scores.json');
+  } catch(e) {
+    data = null;
+  }
+
+  if (!data) {
+    el.innerHTML = `
+      <div class="alert-bar yellow">🎯 Aguardando integração do ConversaScore. Os dados serão populados pelo workflow n8n + Claude API.</div>
+
+      <div class="kpi-grid" style="grid-template-columns: repeat(3, 1fr);">
+        <div class="kpi-card purple-accent"><div class="kpi-icon">🎯</div>
+          <div class="kpi-label">Score Médio do Time</div>
+          <div class="kpi-value purple">—</div>
+          <div class="kpi-sub">nota de 0 a 100</div>
+        </div>
+        <div class="kpi-card green-accent"><div class="kpi-icon">📈</div>
+          <div class="kpi-label">Conversas Analisadas</div>
+          <div class="kpi-value green">—</div>
+          <div class="kpi-sub">no mês</div>
+        </div>
+        <div class="kpi-card"><div class="kpi-icon">⚡</div>
+          <div class="kpi-label">Conversas com Score &lt; 50</div>
+          <div class="kpi-value red">—</div>
+          <div class="kpi-sub">precisam atenção</div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="section-card">
+          <div class="section-header"><div class="section-title">🏆 Ranking por Vendedor</div></div>
+          <div class="empty-state">Scores serão calculados automaticamente com base nas conversas do Chatwoot</div>
+        </div>
+        <div class="section-card">
+          <div class="section-header"><div class="section-title">📊 Breakdown dos Critérios</div></div>
+          <div class="empty-state">
+            <div style="text-align:left;max-width:300px;margin:0 auto;">
+              <div class="score-bar-row"><span class="score-bar-label">Velocidade Resposta</span><span class="score-bar-val" style="color:var(--muted)">25%</span></div>
+              <div class="score-bar-row"><span class="score-bar-label">Follow-up</span><span class="score-bar-val" style="color:var(--muted)">20%</span></div>
+              <div class="score-bar-row"><span class="score-bar-label">Qualidade Comercial</span><span class="score-bar-val" style="color:var(--muted)">25%</span></div>
+              <div class="score-bar-row"><span class="score-bar-label">Tom & Personalização</span><span class="score-bar-val" style="color:var(--muted)">15%</span></div>
+              <div class="score-bar-row"><span class="score-bar-label">Resolução / Resultado</span><span class="score-bar-val" style="color:var(--muted)">15%</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-header"><div class="section-title">📝 Últimas Conversas Analisadas</div></div>
+        <div class="empty-state">As conversas serão listadas aqui com nota individual e detalhamento dos critérios</div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-header"><div class="section-title">💡 Insights IA</div></div>
+        <div class="empty-state">Padrões e sugestões de melhoria serão gerados automaticamente pela IA ao final de cada mês</div>
+      </div>
+    `;
+    return;
+  }
+
+  // Render com dados reais
+  const { scoreGeral, vendedores, conversas, insights, atualizadoEm } = data;
+  const d = new Date(atualizadoEm);
+  document.getElementById('last-update').textContent = `Atualizado: ${d.toLocaleString('pt-BR', { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' })}`;
+
+  const baixos = (conversas || []).filter(c => c.scoreTotal < 50).length;
+
+  el.innerHTML = `
+    <div class="kpi-grid" style="grid-template-columns: repeat(3, 1fr);">
+      <div class="kpi-card purple-accent"><div class="kpi-icon">🎯</div>
+        <div class="kpi-label">Score Médio do Time</div>
+        <div class="kpi-value purple">${(scoreGeral.media || 0).toFixed(1)}</div>
+        <div class="kpi-sub">nota de 0 a 100</div>
+      </div>
+      <div class="kpi-card green-accent"><div class="kpi-icon">📈</div>
+        <div class="kpi-label">Conversas Analisadas</div>
+        <div class="kpi-value green">${fmtNum(scoreGeral.totalAnalisadas)}</div>
+        <div class="kpi-sub">no mês</div>
+      </div>
+      <div class="kpi-card ${baixos > 0 ? 'red-accent' : ''}"><div class="kpi-icon">⚡</div>
+        <div class="kpi-label">Score abaixo de 50</div>
+        <div class="kpi-value ${baixos > 0 ? 'red' : 'green'}">${baixos}</div>
+        <div class="kpi-sub">${baixos > 0 ? 'precisam atenção' : 'nenhuma conversa crítica'}</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <!-- Ranking -->
+      <div class="section-card" style="animation-delay:0.1s">
+        <div class="section-header"><div class="section-title">🏆 Ranking por Vendedor</div></div>
+        <div style="padding:24px 28px;">
+          ${(vendedores || []).map((v, i) => `
+            <div style="display:flex;align-items:center;gap:20px;padding:16px 0;${i > 0 ? 'border-top:1px solid var(--border);' : ''}">
+              <div class="score-circle ${scoreClass(v.media)}" style="--pct:${v.media};width:72px;height:72px;font-size:24px;flex-shrink:0;">
+                <span>${Math.round(v.media)}</span>
+              </div>
+              <div style="flex:1;min-width:0;">
+                <div class="vendedor-name">${v.nome}</div>
+                <div style="font-size:12px;font-family:'DM Mono',monospace;color:var(--muted);margin-top:4px;">${v.conversasAnalisadas} conversas analisadas</div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+
+      <!-- Breakdown -->
+      <div class="section-card" style="animation-delay:0.15s">
+        <div class="section-header"><div class="section-title">📊 Breakdown dos Critérios</div></div>
+        <div style="padding:24px 28px;">
+          ${(vendedores || []).map(v => `
+            <div style="margin-bottom:24px;">
+              <div style="font-weight:700;font-size:14px;margin-bottom:12px;">${v.nome}</div>
+              ${[
+                { label: 'Velocidade', val: v.criterios.velocidade, peso: '25%' },
+                { label: 'Follow-up', val: v.criterios.followup, peso: '20%' },
+                { label: 'Qualidade', val: v.criterios.qualidade, peso: '25%' },
+                { label: 'Tom', val: v.criterios.tom, peso: '15%' },
+                { label: 'Resultado', val: v.criterios.resultado, peso: '15%' }
+              ].map(c => `
+                <div class="score-bar-row">
+                  <span class="score-bar-label">${c.label} <span style="opacity:0.5">(${c.peso})</span></span>
+                  <div class="score-bar-track">
+                    <div class="score-bar-fill" style="width:${(c.val/10)*100}%;background:${scoreColor(c.val*10)}"></div>
+                  </div>
+                  <span class="score-bar-val" style="color:${scoreColor(c.val*10)}">${c.val.toFixed(1)}</span>
+                </div>
+              `).join('')}
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    </div>
+
+    <!-- Últimas conversas -->
+    <div class="section-card" style="animation-delay:0.25s">
+      <div class="section-header">
+        <div class="section-title">📝 Últimas Conversas Analisadas</div>
+        <span class="section-badge">${(conversas || []).length} conversas</span>
+      </div>
+      <div style="overflow-x:auto">
+        <table>
+          <thead><tr>
+            <th>Cliente</th><th>Vendedor</th><th>Data</th>
+            <th class="center">Veloc.</th><th class="center">Follow</th>
+            <th class="center">Qualid.</th><th class="center">Tom</th>
+            <th class="center">Result.</th><th class="center">Score</th>
+          </tr></thead>
+          <tbody>${(conversas || []).slice(0, 20).map(c => `
+            <tr>
+              <td><div class="vendedor-name">${c.cliente}</div></td>
+              <td style="font-size:13px;color:var(--muted)">${c.vendedor}</td>
+              <td style="font-family:'DM Mono',monospace;font-size:12px;">${fmtDate(c.data)}</td>
+              <td class="center" style="font-family:'DM Mono',monospace;font-size:13px;color:${scoreColor(c.velocidade*10)}">${c.velocidade.toFixed(1)}</td>
+              <td class="center" style="font-family:'DM Mono',monospace;font-size:13px;color:${scoreColor(c.followup*10)}">${c.followup.toFixed(1)}</td>
+              <td class="center" style="font-family:'DM Mono',monospace;font-size:13px;color:${scoreColor(c.qualidade*10)}">${c.qualidade.toFixed(1)}</td>
+              <td class="center" style="font-family:'DM Mono',monospace;font-size:13px;color:${scoreColor(c.tom*10)}">${c.tom.toFixed(1)}</td>
+              <td class="center" style="font-family:'DM Mono',monospace;font-size:13px;color:${scoreColor(c.resultado*10)}">${c.resultado.toFixed(1)}</td>
+              <td class="center">
+                <span style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:${scoreColor(c.scoreTotal)}">${Math.round(c.scoreTotal)}</span>
+              </td>
+            </tr>
+          `).join('')}</tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Insights -->
+    ${insights ? `
+      <div class="section-card" style="animation-delay:0.35s">
+        <div class="section-header"><div class="section-title">💡 Insights IA</div></div>
+        <div style="padding:24px 28px;">
+          ${(insights || []).map(insight => `
+            <div style="padding:12px 0;border-bottom:1px solid var(--border);font-size:14px;line-height:1.7;">
+              <span style="margin-right:8px;">${insight.tipo === 'positivo' ? '✅' : insight.tipo === 'atencao' ? '⚠️' : '💡'}</span>
+              ${insight.texto}
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    ` : ''}
+  `;
+}
+
+/* ══════════════════════════════════════════════
+   PAGE 4: META ADS (PLACEHOLDER)
+   ══════════════════════════════════════════════ */
+function renderAdsPlaceholder(el) {
+  el.innerHTML = `
+    <div class="placeholder-page" style="animation: fadeUp 0.5s ease both;">
+      <div class="placeholder-icon">📣</div>
+      <div class="placeholder-title">Meta Ads</div>
+      <div class="placeholder-desc">
+        A integração com a Marketing API do Meta está aguardando a liberação do acesso OAuth pela plataforma.
+        Quando ativo, você verá aqui:
+      </div>
+      <div style="text-align:left;max-width:360px;width:100%;">
+        <div class="pill" style="margin-bottom:8px;"><div class="pill-dot yellow"></div><span>Investimento total e por campanha</span></div>
+        <div class="pill" style="margin-bottom:8px;"><div class="pill-dot yellow"></div><span>CPL, CPC, CTR e ROAS</span></div>
+        <div class="pill" style="margin-bottom:8px;"><div class="pill-dot yellow"></div><span>Leads gerados por campanha</span></div>
+        <div class="pill" style="margin-bottom:8px;"><div class="pill-dot yellow"></div><span>Funil: Impressão → Clique → Lead → Festa</span></div>
+        <div class="pill"><div class="pill-dot yellow"></div><span>Comparativo com dados de vendas</span></div>
+      </div>
+      <div class="placeholder-badge">Aguardando liberação Meta OAuth</div>
+    </div>
+  `;
+}
+
+/* ══════════════════════════════════════════════
+   PAGE 5: ORGÂNICO SOCIAL (PLACEHOLDER)
+   ══════════════════════════════════════════════ */
+function renderOrganicoPlaceholder(el) {
+  el.innerHTML = `
+    <div class="placeholder-page" style="animation: fadeUp 0.5s ease both;">
+      <div class="placeholder-icon">📸</div>
+      <div class="placeholder-title">Orgânico Social</div>
+      <div class="placeholder-desc">
+        A análise de posts orgânicos depende das permissões de Pages API e Instagram API, que serão configuradas quando o acesso ao Meta for liberado.
+      </div>
+      <div style="text-align:left;max-width:360px;width:100%;">
+        <div class="pill" style="margin-bottom:8px;"><div class="pill-dot purple"></div><span>Engajamento médio por post</span></div>
+        <div class="pill" style="margin-bottom:8px;"><div class="pill-dot purple"></div><span>Comentários mais recorrentes</span></div>
+        <div class="pill" style="margin-bottom:8px;"><div class="pill-dot purple"></div><span>Comentários não respondidos (30 dias)</span></div>
+        <div class="pill" style="margin-bottom:8px;"><div class="pill-dot purple"></div><span>Frequência e calendário de postagem</span></div>
+        <div class="pill"><div class="pill-dot purple"></div><span>Análise de sentimento dos comentários</span></div>
+      </div>
+      <div class="placeholder-badge">Aguardando permissões Meta API</div>
+    </div>
+  `;
+}
+
+/* ══════════════════════════════════════════════
+   INIT
+   ══════════════════════════════════════════════ */
+navigate('comercial');
+setInterval(() => renderPage(currentPage), 5 * 60 * 1000);
+</script>
+</body>
+</html>
