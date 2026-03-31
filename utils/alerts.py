@@ -27,7 +27,7 @@ def send_alert(script_name: str, error: Exception, context: str = "") -> None:
     now = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
     tb = traceback.format_exc()
 
-    subject = f"[NightBus ERRO] {script_name} — {now}"
+    subject = f"[FiestaHub ERRO] {script_name} — {now}"
 
     body_lines = [
         f"Script:   {script_name}",

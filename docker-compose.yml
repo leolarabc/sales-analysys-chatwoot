@@ -22,7 +22,7 @@ services:
   # URL: https://webhook.yourdomain.com/conversascore-webhook
   # PathPrefix(/conversascore-webhook) evita conflito com n8n (/webhook/*)
   central-webhook:
-    image: nightbus-webhook:latest
+    image: fiestahub-webhook:latest
     volumes:
       - /home/your-project/.env:/app/.env:ro
     networks:
@@ -41,7 +41,7 @@ services:
   # Acessa PostgreSQL via rede overlay (PG_HOST=postgres)
   # Escreve os JSONs nos diretórios do host via volume bind
   central-cron:
-    image: nightbus-cron:latest
+    image: fiestahub-cron:latest
     volumes:
       - /home/your-project/.env:/app/.env:ro
       - /home/your-project:/home/your-project

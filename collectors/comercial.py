@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Coleta dados comerciais da API NightBus e gera data.json.
-Substitui o workflow n8n "NightBus — Dashboard de Vendas".
+Coleta dados comerciais da API FiestaHub e gera data.json.
+Substitui o workflow n8n "FiestaHub — Dashboard de Vendas".
 Agendamento: 8h, 12h, 17h (via crontab)
 """
 
@@ -126,17 +126,17 @@ def dias_uteis_mes(hoje: date):
 
 
 def main():
-    token = os.environ["NIGHTBUS_TOKEN"]
+    token = os.environ["FIESTAHUB_TOKEN"]
     hoje = date.today()
     mes = str(hoje.month).zfill(2)
     ano = str(hoje.year)
 
     print(f"[comercial] Buscando {mes}/{ano}...")
 
-    vendas = fetch_all_pages("api.nightbus.com.br", token, f"/sales/{mes}/{ano}")
+    vendas = fetch_all_pages("api.fiestahub.com.br", token, f"/sales/{mes}/{ano}")
     print(f"[comercial] {len(vendas)} vendas")
 
-    eventos = fetch_all_pages("api.nightbus.com.br", token, f"/reports/events/{mes}/{ano}")
+    eventos = fetch_all_pages("api.fiestahub.com.br", token, f"/reports/events/{mes}/{ano}")
     print(f"[comercial] {len(eventos)} eventos")
 
     # Mapa evento_id → vendedor (da API de vendas)

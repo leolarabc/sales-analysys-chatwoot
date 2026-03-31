@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Coleta conversas do Chatwoot + vendas NightBus e gera chatwoot.json.
-Substitui o workflow n8n "NightBus - Chatwoot Leads Dashboard".
+Coleta conversas do Chatwoot + vendas FiestaHub e gera chatwoot.json.
+Substitui o workflow n8n "FiestaHub - Chatwoot Leads Dashboard".
 Agendamento: 8h05, 12h05, 17h05 (via crontab)
 """
 
@@ -64,14 +64,14 @@ def fetch_chatwoot_conversations(token: str, inicio_mes_ts: int) -> list:
     return all_conversas
 
 
-def fetch_nightbus_vendas(token: str, mes: str, ano: str) -> dict[str, int]:
-    """Busca vendas do NightBus e conta festas por vendedor."""
+def fetch_fiestahub_vendas(token: str, mes: str, ano: str) -> dict[str, int]:
+    """Busca vendas do FiestaHub e conta festas por vendedor."""
     headers = {"Authorization": token}
     all_vendas = []
     page = 1
     while True:
         r = requests.get(
-            f"https://api.nightbus.com.br/sales/{mes}/{ano}?page={page}",
+            f"https://api.fiestahub.com.br/sales/{mes}/{ano}?page={page}",
             headers=headers,
             timeout=30,
         )
@@ -96,7 +96,7 @@ def fetch_nightbus_vendas(token: str, mes: str, ano: str) -> dict[str, int]:
 
 def main():
     chatwoot_token = os.environ["CHATWOOT_TOKEN"]
-    nightbus_token = os.environ["NIGHTBUS_TOKEN"]
+    fiestahub_token = os.environ["FIESTAHUB_TOKEN"]
 
     hoje = date.today()
     mes = str(hoje.month).zfill(2)
@@ -111,7 +111,7 @@ def main():
     print(f"[chatwoot] {len(conversas)} conversas encontradas")
 
     print(f"[chatwoot] Buscando vendas {mes}/{ano}...")
-    festas_convertidas = fetch_nightbus_vendas(nightbus_token, mes, ano)
+    festas_convertidas = fetch_fiestahub_vendas(fiestahub_token, mes, ano)
     total_festas = sum(festas_convertidas.values())
 
     # ── Métricas por agente ────────────────────────────────────
