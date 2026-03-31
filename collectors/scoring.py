@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Calcula o ConversaScore das conversas finalizadas via Claude API e gera scores.json.
-Substitui o workflow n8n "BoateBus - ConversaScore Diário".
+Substitui o workflow n8n "NightBus - ConversaScore Diário".
 Agendamento: 6h diário (via crontab)
 """
 
@@ -118,7 +118,7 @@ def analyze_with_claude(conversa_texto: str, conv_id: int) -> dict:
 
     api_key = os.environ["ANTHROPIC_API_KEY"]
 
-    prompt = f"""Você é um analista de qualidade de atendimento comercial. Analise a conversa abaixo entre um vendedor da BoateBus (empresa de festas em ônibus/bus party em Belo Horizonte) e um cliente.
+    prompt = f"""Você é um analista de qualidade de atendimento comercial. Analise a conversa abaixo entre um vendedor da NightBus (empresa de festas em ônibus/bus party em Belo Horizonte) e um cliente.
 
 AVALIE DOIS CRITÉRIOS:
 

@@ -1,15 +1,15 @@
-# BoateBus Central de Inteligência — Dashboard 2.0
+# NightBus Central de Inteligência — Dashboard 2.0
 
 ## Visão Geral
 
-Dashboard multi-page HTML para a BoateBus (empresa de festas em ônibus/bus party em Belo Horizonte), com 5 abas: Comercial, Chatwoot Leads, ConversaScore, Meta Ads, Orgânico Social. Servido via nginx no Docker Swarm com Traefik como reverse proxy.
+Dashboard multi-page HTML para a NightBus (empresa de festas em ônibus/bus party em Belo Horizonte), com 5 abas: Comercial, Chatwoot Leads, ConversaScore, Meta Ads, Orgânico Social. Servido via nginx no Docker Swarm com Traefik como reverse proxy.
 
 O projeto envolve:
 1. Dashboard HTML estático (`src/index.html`) alimentado por arquivos JSON
 2. 4 scripts Python que coletam dados e geram os JSONs (rodam via crontab)
 3. 1 servidor webhook FastAPI (Docker) que captura mensagens em tempo real
 4. Tabelas PostgreSQL para armazenar conversas e scores
-5. Integração com APIs: Chatwoot, BoateBus, OpenAI Whisper, Claude API
+5. Integração com APIs: Chatwoot, NightBus, OpenAI Whisper, Claude API
 
 ## Infraestrutura
 
@@ -45,7 +45,7 @@ O projeto envolve:
 Todas as credenciais sensíveis estão no arquivo `.env` em `/home/your-project/.env`. **NUNCA commitar o .env no git.**
 
 Variáveis necessárias (ver `.env.example`):
-- `BOATEBUS_TOKEN` — Bearer token da API BoateBus
+- `NIGHTBUS_TOKEN` — Bearer token da API NightBus
 - `CHATWOOT_TOKEN` — API token do Chatwoot
 - `CHATWOOT_ACCOUNT_ID=YOUR_ACCOUNT_ID`
 - `ANTHROPIC_API_KEY` — Claude API (usada no scoring diário)
@@ -131,7 +131,7 @@ python3 collectors/scoring.py
 
 # Teste do webhook
 curl -s https://webhook.yourdomain.com/
-# Deve retornar: {"status":"ok","service":"boatebus-webhook"}
+# Deve retornar: {"status":"ok","service":"nightbus-webhook"}
 
 # Verificar serviços Docker
 docker service ls | grep central
@@ -140,14 +140,14 @@ docker service ls | grep central
 ## Scripts Python (substituem n8n)
 
 ### `collectors/comercial.py` — Cron 8h, 12h, 17h
-- Busca vendas e eventos da API BoateBus
+- Busca vendas e eventos da API NightBus
 - Calcula KPIs, comissões, inadimplentes
 - Salva em `/home/your-legacy-dashboard/data.json` **e** `/home/your-project/data.json`
 - Em caso de erro: envia e-mail de alerta
 
 ### `collectors/chatwoot_leads.py` — Cron 8h05, 12h05, 17h05
 - Busca conversas do Chatwoot do mês atual
-- Cruza com vendas BoateBus para taxa de conversão
+- Cruza com vendas NightBus para taxa de conversão
 - Salva em `/home/your-project/chatwoot.json`
 
 ### `collectors/webhook.py` — FastAPI (sempre rodando em Docker)
@@ -169,7 +169,7 @@ docker service ls | grep central
 Qualquer script que falhe envia e-mail automaticamente:
 - **De**: alerts@yourcompany.com (Gmail App Password)
 - **Para**: admin@yourcompany.com
-- **Assunto**: `[BoateBus ERRO] nome_do_script — DD/MM/YYYY HH:MM`
+- **Assunto**: `[NightBus ERRO] nome_do_script — DD/MM/YYYY HH:MM`
 - **Conteúdo**: nome do script, erro, traceback completo
 
 ## Schema PostgreSQL
@@ -185,16 +185,16 @@ Tabelas: `conversascore.conversas`, `conversascore.mensagens`, `conversascore.sc
 ## Crontab no Servidor
 
 ```
-0 8,12,17 * * * cd /home/your-project && python3 collectors/comercial.py >> /var/log/boatebus-comercial.log 2>&1
-5 8,12,17 * * * cd /home/your-project && python3 collectors/chatwoot_leads.py >> /var/log/boatebus-chatwoot.log 2>&1
-0 6 * * * cd /home/your-project && python3 collectors/scoring.py >> /var/log/boatebus-scoring.log 2>&1
+0 8,12,17 * * * cd /home/your-project && python3 collectors/comercial.py >> /var/log/nightbus-comercial.log 2>&1
+5 8,12,17 * * * cd /home/your-project && python3 collectors/chatwoot_leads.py >> /var/log/nightbus-chatwoot.log 2>&1
+0 6 * * * cd /home/your-project && python3 collectors/scoring.py >> /var/log/nightbus-scoring.log 2>&1
 ```
 
 Verificar logs:
 ```bash
-tail -f /var/log/boatebus-comercial.log
-tail -f /var/log/boatebus-chatwoot.log
-tail -f /var/log/boatebus-scoring.log
+tail -f /var/log/nightbus-comercial.log
+tail -f /var/log/nightbus-chatwoot.log
+tail -f /var/log/nightbus-scoring.log
 ```
 
 ## Abas do Dashboard
@@ -276,13 +276,13 @@ curl -X POST https://webhook.yourdomain.com/conversascore-webhook \
 
 ### data.json não atualiza
 ```bash
-tail -20 /var/log/boatebus-comercial.log
+tail -20 /var/log/nightbus-comercial.log
 python3 /home/your-project/collectors/comercial.py
 ```
 
 ### Score não gera
 ```bash
-tail -20 /var/log/boatebus-scoring.log
+tail -20 /var/log/nightbus-scoring.log
 # Verificar conversas pendentes
 PGCONTAINER=$(docker ps --filter "name=postgres" --format "{{.ID}}" | head -1)
 docker exec -i $PGCONTAINER psql -U postgres -d n8n_queue \

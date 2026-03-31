@@ -1,6 +1,6 @@
 """
 Servidor webhook FastAPI — recebe eventos do Chatwoot em tempo real.
-Substitui o workflow n8n "BoateBus - ConversaScore Captura".
+Substitui o workflow n8n "NightBus - ConversaScore Captura".
 
 Deploy: Docker service (ver docker-compose.yml)
 URL pública: https://webhook.yourdomain.com/conversascore-webhook
@@ -29,7 +29,7 @@ from utils.db import get_connection
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [webhook] %(message)s")
 log = logging.getLogger(__name__)
 
-app = FastAPI(title="BoateBus Webhook", docs_url=None, redoc_url=None)
+app = FastAPI(title="NightBus Webhook", docs_url=None, redoc_url=None)
 
 # ── Constantes ─────────────────────────────────────────────────
 AGENTES: dict[int, str] = {
@@ -296,7 +296,7 @@ def process_event(body: dict) -> dict:
 
 @app.get("/")
 def health():
-    return {"status": "ok", "service": "boatebus-webhook"}
+    return {"status": "ok", "service": "nightbus-webhook"}
 
 
 @app.post("/conversascore-webhook")

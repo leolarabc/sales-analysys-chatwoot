@@ -1,5 +1,5 @@
 # ══════════════════════════════════════════════════════════════
-# BoateBus Central — Crontab do servidor
+# NightBus Central — Crontab do servidor
 # Instalar: crontab -e  →  colar as linhas abaixo
 # Pré-requisito: pip install -r /home/your-project/requirements.txt
 # ══════════════════════════════════════════════════════════════
@@ -9,10 +9,10 @@ PYTHONPATH=/home/your-project
 ENV_FILE=/home/your-project/.env
 
 # ── Dashboard Comercial (8h, 12h, 17h) ────────────────────────
-0 8,12,17 * * * cd /home/your-project && python3 collectors/comercial.py >> /var/log/boatebus-comercial.log 2>&1
+0 8,12,17 * * * cd /home/your-project && python3 collectors/comercial.py >> /var/log/nightbus-comercial.log 2>&1
 
 # ── Chatwoot Leads (8h05, 12h05, 17h05) ───────────────────────
-5 8,12,17 * * * cd /home/your-project && python3 collectors/chatwoot_leads.py >> /var/log/boatebus-chatwoot.log 2>&1
+5 8,12,17 * * * cd /home/your-project && python3 collectors/chatwoot_leads.py >> /var/log/nightbus-chatwoot.log 2>&1
 
 # ── ConversaScore Diário (6h) ──────────────────────────────────
-0 6 * * * cd /home/your-project && python3 collectors/scoring.py >> /var/log/boatebus-scoring.log 2>&1
+0 6 * * * cd /home/your-project && python3 collectors/scoring.py >> /var/log/nightbus-scoring.log 2>&1
