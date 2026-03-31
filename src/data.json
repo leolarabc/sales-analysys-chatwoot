@@ -23,7 +23,7 @@
   },
   "vendedores": [
     {
-      "nome": "Agent One",
+      "nome": "José M.",
       "festas": 44,
       "faturamento": 172400.00,
       "faturamentoPago": 119200.00,
@@ -32,7 +32,7 @@
       "percentualMeta": 107.75
     },
     {
-      "nome": "Agent Two",
+      "nome": "Guilherme F.",
       "festas": 30,
       "faturamento": 115000.00,
       "faturamentoPago": 79300.00,
@@ -46,7 +46,7 @@
     "bonusGlobal": 0,
     "vendedores": [
       {
-        "nome": "Agent One",
+        "nome": "José M.",
         "faturamentoPago": 119200.00,
         "percentualComissao": 5,
         "comissaoIndividual": 5960.00,
@@ -54,7 +54,7 @@
         "totalComissao": 6760.00
       },
       {
-        "nome": "Agent Two",
+        "nome": "Guilherme F.",
         "faturamentoPago": 79300.00,
         "percentualComissao": 4,
         "comissaoIndividual": 3172.00,
@@ -70,7 +70,7 @@
       "clienteNome": "Maria S.",
       "telefone": "+55 11 99000-0001",
       "dataEvento": "2026-03-08T21:00:00Z",
-      "vendedor": "Agent One",
+      "vendedor": "José M.",
       "valorPago": 1200.00,
       "valorPendente": 2800.00,
       "semPagamento": false
@@ -81,7 +81,7 @@
       "clienteNome": "João P.",
       "telefone": "+55 11 99000-0002",
       "dataEvento": "2026-03-15T22:00:00Z",
-      "vendedor": "Agent Two",
+      "vendedor": "Guilherme F.",
       "valorPago": 0,
       "valorPendente": 4500.00,
       "semPagamento": true
@@ -92,7 +92,7 @@
       "clienteNome": "Carlos R.",
       "telefone": "+55 11 99000-0003",
       "dataEvento": "2026-03-19T23:00:00Z",
-      "vendedor": "Agent One",
+      "vendedor": "José M.",
       "valorPago": 2000.00,
       "valorPendente": 1900.00,
       "semPagamento": false
@@ -103,7 +103,7 @@
       "clienteNome": "Ana L.",
       "telefone": "+55 11 99000-0004",
       "dataEvento": "2026-03-22T21:30:00Z",
-      "vendedor": "Agent Two",
+      "vendedor": "Guilherme F.",
       "valorPago": 0,
       "valorPendente": 3800.00,
       "semPagamento": true
@@ -114,7 +114,7 @@
       "clienteNome": "Pedro M.",
       "telefone": "+55 11 99000-0005",
       "dataEvento": "2026-03-26T22:00:00Z",
-      "vendedor": "Agent One",
+      "vendedor": "José M.",
       "valorPago": 3200.00,
       "valorPendente": 1600.00,
       "semPagamento": false

@@ -10,7 +10,7 @@
   },
   "porVendedor": [
     {
-      "nome": "Agent One",
+      "nome": "José M.",
       "atribuidas": 1042,
       "pendentes": 84,
       "naoAtendidas": 51,
@@ -19,7 +19,7 @@
       "taxaConversao": 4.2
     },
     {
-      "nome": "Agent Two",
+      "nome": "Guilherme F.",
       "atribuidas": 808,
       "pendentes": 58,
       "naoAtendidas": 47,
@@ -42,31 +42,31 @@
     "snoozed": 2
   },
   "leadsPendentes": [
-    { "id": 5001, "nome": "Fernanda O.", "telefone": "+55 11 98100-0001", "vendedor": "Agent One", "iniciadoEm": "2026-03-29T14:22:00Z", "status": "pending" },
-    { "id": 5002, "nome": "Rafael B.", "telefone": "+55 11 98100-0002", "vendedor": "Agent Two", "iniciadoEm": "2026-03-29T15:10:00Z", "status": "pending" },
-    { "id": 5003, "nome": "Camila T.", "telefone": "+55 11 98100-0003", "vendedor": "Agent One", "iniciadoEm": "2026-03-29T16:04:00Z", "status": "pending" },
-    { "id": 5004, "nome": "Lucas M.", "telefone": "+55 11 98100-0004", "vendedor": "Agent Two", "iniciadoEm": "2026-03-29T17:31:00Z", "status": "pending" },
-    { "id": 5005, "nome": "Beatriz N.", "telefone": "+55 11 98100-0005", "vendedor": "Agent One", "iniciadoEm": "2026-03-29T18:45:00Z", "status": "pending" },
-    { "id": 5006, "nome": "Thiago C.", "telefone": "+55 11 98100-0006", "vendedor": "Agent One", "iniciadoEm": "2026-03-30T08:12:00Z", "status": "pending" },
-    { "id": 5007, "nome": "Isabela R.", "telefone": "+55 11 98100-0007", "vendedor": "Agent Two", "iniciadoEm": "2026-03-30T09:05:00Z", "status": "pending" },
-    { "id": 5008, "nome": "Gustavo F.", "telefone": "+55 11 98100-0008", "vendedor": "Agent One", "iniciadoEm": "2026-03-30T09:50:00Z", "status": "pending" },
-    { "id": 5009, "nome": "Larissa V.", "telefone": "+55 11 98100-0009", "vendedor": "Agent Two", "iniciadoEm": "2026-03-30T10:22:00Z", "status": "pending" },
-    { "id": 5010, "nome": "Henrique A.", "telefone": "+55 11 98100-0010", "vendedor": "Agent One", "iniciadoEm": "2026-03-30T11:08:00Z", "status": "pending" },
-    { "id": 5011, "nome": "Priscila G.", "telefone": "+55 11 98100-0011", "vendedor": "Agent Two", "iniciadoEm": "2026-03-30T12:33:00Z", "status": "pending" },
-    { "id": 5012, "nome": "Eduardo S.", "telefone": "+55 11 98100-0012", "vendedor": "Agent One", "iniciadoEm": "2026-03-30T13:47:00Z", "status": "pending" }
+    { "id": 5001, "nome": "Fernanda O.", "telefone": "+55 11 98100-0001", "vendedor": "José M.", "iniciadoEm": "2026-03-29T14:22:00Z", "status": "pending" },
+    { "id": 5002, "nome": "Rafael B.", "telefone": "+55 11 98100-0002", "vendedor": "Guilherme F.", "iniciadoEm": "2026-03-29T15:10:00Z", "status": "pending" },
+    { "id": 5003, "nome": "Camila T.", "telefone": "+55 11 98100-0003", "vendedor": "José M.", "iniciadoEm": "2026-03-29T16:04:00Z", "status": "pending" },
+    { "id": 5004, "nome": "Lucas M.", "telefone": "+55 11 98100-0004", "vendedor": "Guilherme F.", "iniciadoEm": "2026-03-29T17:31:00Z", "status": "pending" },
+    { "id": 5005, "nome": "Beatriz N.", "telefone": "+55 11 98100-0005", "vendedor": "José M.", "iniciadoEm": "2026-03-29T18:45:00Z", "status": "pending" },
+    { "id": 5006, "nome": "Thiago C.", "telefone": "+55 11 98100-0006", "vendedor": "José M.", "iniciadoEm": "2026-03-30T08:12:00Z", "status": "pending" },
+    { "id": 5007, "nome": "Isabela R.", "telefone": "+55 11 98100-0007", "vendedor": "Guilherme F.", "iniciadoEm": "2026-03-30T09:05:00Z", "status": "pending" },
+    { "id": 5008, "nome": "Gustavo F.", "telefone": "+55 11 98100-0008", "vendedor": "José M.", "iniciadoEm": "2026-03-30T09:50:00Z", "status": "pending" },
+    { "id": 5009, "nome": "Larissa V.", "telefone": "+55 11 98100-0009", "vendedor": "Guilherme F.", "iniciadoEm": "2026-03-30T10:22:00Z", "status": "pending" },
+    { "id": 5010, "nome": "Henrique A.", "telefone": "+55 11 98100-0010", "vendedor": "José M.", "iniciadoEm": "2026-03-30T11:08:00Z", "status": "pending" },
+    { "id": 5011, "nome": "Priscila G.", "telefone": "+55 11 98100-0011", "vendedor": "Guilherme F.", "iniciadoEm": "2026-03-30T12:33:00Z", "status": "pending" },
+    { "id": 5012, "nome": "Eduardo S.", "telefone": "+55 11 98100-0012", "vendedor": "José M.", "iniciadoEm": "2026-03-30T13:47:00Z", "status": "pending" }
   ],
   "leadsNaoAtendidos": [
-    { "id": 4101, "nome": "Juliana C.", "telefone": "+55 11 97200-0001", "vendedor": "Agent One", "iniciadoEm": "2026-03-28T10:15:00Z", "status": "open" },
-    { "id": 4102, "nome": "Marcelo H.", "telefone": "+55 11 97200-0002", "vendedor": "Agent Two", "iniciadoEm": "2026-03-28T11:40:00Z", "status": "open" },
-    { "id": 4103, "nome": "Tatiana L.", "telefone": "+55 11 97200-0003", "vendedor": "Agent One", "iniciadoEm": "2026-03-28T14:22:00Z", "status": "open" },
-    { "id": 4104, "nome": "Roberto K.", "telefone": "+55 11 97200-0004", "vendedor": "Agent Two", "iniciadoEm": "2026-03-29T08:05:00Z", "status": "open" },
-    { "id": 4105, "nome": "Vanessa P.", "telefone": "+55 11 97200-0005", "vendedor": "Agent One", "iniciadoEm": "2026-03-29T09:18:00Z", "status": "open" },
-    { "id": 4106, "nome": "Felipe D.", "telefone": "+55 11 97200-0006", "vendedor": "Agent Two", "iniciadoEm": "2026-03-29T10:55:00Z", "status": "open" },
-    { "id": 4107, "nome": "Sandra W.", "telefone": "+55 11 97200-0007", "vendedor": "Agent One", "iniciadoEm": "2026-03-29T12:30:00Z", "status": "open" },
-    { "id": 4108, "nome": "Bruno E.", "telefone": "+55 11 97200-0008", "vendedor": "Agent Two", "iniciadoEm": "2026-03-29T13:44:00Z", "status": "open" },
-    { "id": 4109, "nome": "Natalia Q.", "telefone": "+55 11 97200-0009", "vendedor": "Agent One", "iniciadoEm": "2026-03-30T07:28:00Z", "status": "open" },
-    { "id": 4110, "nome": "Daniel Z.", "telefone": "+55 11 97200-0010", "vendedor": "Agent Two", "iniciadoEm": "2026-03-30T08:50:00Z", "status": "open" },
-    { "id": 4111, "nome": "Aline X.", "telefone": "+55 11 97200-0011", "vendedor": "Agent One", "iniciadoEm": "2026-03-30T10:03:00Z", "status": "open" },
-    { "id": 4112, "nome": "Rodrigo Y.", "telefone": "+55 11 97200-0012", "vendedor": "Agent Two", "iniciadoEm": "2026-03-30T11:17:00Z", "status": "open" }
+    { "id": 4101, "nome": "Juliana C.", "telefone": "+55 11 97200-0001", "vendedor": "José M.", "iniciadoEm": "2026-03-28T10:15:00Z", "status": "open" },
+    { "id": 4102, "nome": "Marcelo H.", "telefone": "+55 11 97200-0002", "vendedor": "Guilherme F.", "iniciadoEm": "2026-03-28T11:40:00Z", "status": "open" },
+    { "id": 4103, "nome": "Tatiana L.", "telefone": "+55 11 97200-0003", "vendedor": "José M.", "iniciadoEm": "2026-03-28T14:22:00Z", "status": "open" },
+    { "id": 4104, "nome": "Roberto K.", "telefone": "+55 11 97200-0004", "vendedor": "Guilherme F.", "iniciadoEm": "2026-03-29T08:05:00Z", "status": "open" },
+    { "id": 4105, "nome": "Vanessa P.", "telefone": "+55 11 97200-0005", "vendedor": "José M.", "iniciadoEm": "2026-03-29T09:18:00Z", "status": "open" },
+    { "id": 4106, "nome": "Felipe D.", "telefone": "+55 11 97200-0006", "vendedor": "Guilherme F.", "iniciadoEm": "2026-03-29T10:55:00Z", "status": "open" },
+    { "id": 4107, "nome": "Sandra W.", "telefone": "+55 11 97200-0007", "vendedor": "José M.", "iniciadoEm": "2026-03-29T12:30:00Z", "status": "open" },
+    { "id": 4108, "nome": "Bruno E.", "telefone": "+55 11 97200-0008", "vendedor": "Guilherme F.", "iniciadoEm": "2026-03-29T13:44:00Z", "status": "open" },
+    { "id": 4109, "nome": "Natalia Q.", "telefone": "+55 11 97200-0009", "vendedor": "José M.", "iniciadoEm": "2026-03-30T07:28:00Z", "status": "open" },
+    { "id": 4110, "nome": "Daniel Z.", "telefone": "+55 11 97200-0010", "vendedor": "Guilherme F.", "iniciadoEm": "2026-03-30T08:50:00Z", "status": "open" },
+    { "id": 4111, "nome": "Aline X.", "telefone": "+55 11 97200-0011", "vendedor": "José M.", "iniciadoEm": "2026-03-30T10:03:00Z", "status": "open" },
+    { "id": 4112, "nome": "Rodrigo Y.", "telefone": "+55 11 97200-0012", "vendedor": "Guilherme F.", "iniciadoEm": "2026-03-30T11:17:00Z", "status": "open" }
   ]
 }
