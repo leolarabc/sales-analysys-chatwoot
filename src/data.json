@@ -1,0 +1,123 @@
+{
+  "atualizadoEm": "2026-03-30T17:00:00",
+  "periodo": {
+    "mes": 3,
+    "ano": 2026,
+    "diasUteisPassados": 20,
+    "diasUteisRestantes": 5
+  },
+  "kpis": {
+    "faturamentoTotal": 287400.00,
+    "faturamentoPago": 198500.00,
+    "totalFestas": 74,
+    "ticketMedio": 3883.78,
+    "mediaDiaria": 14370.00
+  },
+  "meta": {
+    "valor": 320000,
+    "projecao": 308500,
+    "deficit": -11500,
+    "percentualMeta": 89.8,
+    "necessarioPorDia": 24300,
+    "statusColor": "yellow"
+  },
+  "vendedores": [
+    {
+      "nome": "Agent One",
+      "festas": 44,
+      "faturamento": 172400.00,
+      "faturamentoPago": 119200.00,
+      "ticketMedio": 3918.18,
+      "meta": 160000,
+      "percentualMeta": 107.75
+    },
+    {
+      "nome": "Agent Two",
+      "festas": 30,
+      "faturamento": 115000.00,
+      "faturamentoPago": 79300.00,
+      "ticketMedio": 3833.33,
+      "meta": 160000,
+      "percentualMeta": 71.88
+    }
+  ],
+  "comissoes": {
+    "faturamentoPagoTotal": 198500.00,
+    "bonusGlobal": 0,
+    "vendedores": [
+      {
+        "nome": "Agent One",
+        "faturamentoPago": 119200.00,
+        "percentualComissao": 5,
+        "comissaoIndividual": 5960.00,
+        "bonus": 800.00,
+        "totalComissao": 6760.00
+      },
+      {
+        "nome": "Agent Two",
+        "faturamentoPago": 79300.00,
+        "percentualComissao": 4,
+        "comissaoIndividual": 3172.00,
+        "bonus": 0,
+        "totalComissao": 3172.00
+      }
+    ]
+  },
+  "inadimplentes": [
+    {
+      "eventoId": 1041,
+      "eventoTitulo": "Festa Aniversário — 15 anos",
+      "clienteNome": "Maria S.",
+      "telefone": "+55 11 99000-0001",
+      "dataEvento": "2026-03-08T21:00:00Z",
+      "vendedor": "Agent One",
+      "valorPago": 1200.00,
+      "valorPendente": 2800.00,
+      "semPagamento": false
+    },
+    {
+      "eventoId": 1055,
+      "eventoTitulo": "Festa Formatura — Direito",
+      "clienteNome": "João P.",
+      "telefone": "+55 11 99000-0002",
+      "dataEvento": "2026-03-15T22:00:00Z",
+      "vendedor": "Agent Two",
+      "valorPago": 0,
+      "valorPendente": 4500.00,
+      "semPagamento": true
+    },
+    {
+      "eventoId": 1067,
+      "eventoTitulo": "Balada de Empresa",
+      "clienteNome": "Carlos R.",
+      "telefone": "+55 11 99000-0003",
+      "dataEvento": "2026-03-19T23:00:00Z",
+      "vendedor": "Agent One",
+      "valorPago": 2000.00,
+      "valorPendente": 1900.00,
+      "semPagamento": false
+    },
+    {
+      "eventoId": 1078,
+      "eventoTitulo": "Aniversário — 30 anos",
+      "clienteNome": "Ana L.",
+      "telefone": "+55 11 99000-0004",
+      "dataEvento": "2026-03-22T21:30:00Z",
+      "vendedor": "Agent Two",
+      "valorPago": 0,
+      "valorPendente": 3800.00,
+      "semPagamento": true
+    },
+    {
+      "eventoId": 1089,
+      "eventoTitulo": "Formatura Medicina",
+      "clienteNome": "Pedro M.",
+      "telefone": "+55 11 99000-0005",
+      "dataEvento": "2026-03-26T22:00:00Z",
+      "vendedor": "Agent One",
+      "valorPago": 3200.00,
+      "valorPendente": 1600.00,
+      "semPagamento": false
+    }
+  ]
+}

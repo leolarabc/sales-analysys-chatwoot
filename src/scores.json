@@ -1,0 +1,73 @@
+{
+  "atualizadoEm": "2026-03-30T06:00:00",
+  "periodo": { "mes": 3, "ano": 2026 },
+  "scoreGeral": {
+    "media": 62.4,
+    "totalAnalisadas": 38
+  },
+  "vendedores": [
+    {
+      "nome": "Agent One",
+      "media": 65.8,
+      "conversasAnalisadas": 23,
+      "criterios": {
+        "velocidade": 7.2,
+        "followup": 5.8,
+        "qualidade": 6.4,
+        "tom": 7.1,
+        "resultado": 5.0
+      }
+    },
+    {
+      "nome": "Agent Two",
+      "media": 57.1,
+      "conversasAnalisadas": 15,
+      "criterios": {
+        "velocidade": 5.4,
+        "followup": 4.9,
+        "qualidade": 5.8,
+        "tom": 6.2,
+        "resultado": 5.0
+      }
+    }
+  ],
+  "conversas": [
+    { "cliente": "Fernanda O.", "vendedor": "Agent One", "data": "2026-03-28", "velocidade": 10.0, "followup": 8.0, "qualidade": 7.0, "tom": 8.0, "resultado": 5.0, "scoreTotal": 78.5 },
+    { "cliente": "Rafael B.", "vendedor": "Agent Two", "data": "2026-03-27", "velocidade": 7.0, "followup": 6.0, "qualidade": 6.0, "tom": 7.0, "resultado": 5.0, "scoreTotal": 62.5 },
+    { "cliente": "Camila T.", "vendedor": "Agent One", "data": "2026-03-27", "velocidade": 10.0, "followup": 4.0, "qualidade": 8.0, "tom": 9.0, "resultado": 5.0, "scoreTotal": 73.0 },
+    { "cliente": "Lucas M.", "vendedor": "Agent Two", "data": "2026-03-26", "velocidade": 4.0, "followup": 2.0, "qualidade": 4.0, "tom": 5.0, "resultado": 5.0, "scoreTotal": 39.5 },
+    { "cliente": "Beatriz N.", "vendedor": "Agent One", "data": "2026-03-26", "velocidade": 7.0, "followup": 8.0, "qualidade": 7.0, "tom": 7.0, "resultado": 5.0, "scoreTotal": 69.5 },
+    { "cliente": "Thiago C.", "vendedor": "Agent One", "data": "2026-03-25", "velocidade": 10.0, "followup": 0.0, "qualidade": 5.0, "tom": 6.0, "resultado": 5.0, "scoreTotal": 55.5 },
+    { "cliente": "Isabela R.", "vendedor": "Agent Two", "data": "2026-03-25", "velocidade": 1.0, "followup": 0.0, "qualidade": 3.0, "tom": 4.0, "resultado": 5.0, "scoreTotal": 25.0 },
+    { "cliente": "Gustavo F.", "vendedor": "Agent One", "data": "2026-03-24", "velocidade": 10.0, "followup": 10.0, "qualidade": 9.0, "tom": 9.0, "resultado": 5.0, "scoreTotal": 85.5 },
+    { "cliente": "Larissa V.", "vendedor": "Agent Two", "data": "2026-03-24", "velocidade": 7.0, "followup": 4.0, "qualidade": 5.0, "tom": 6.0, "resultado": 5.0, "scoreTotal": 54.5 },
+    { "cliente": "Henrique A.", "vendedor": "Agent One", "data": "2026-03-23", "velocidade": 4.0, "followup": 8.0, "qualidade": 6.0, "tom": 7.0, "resultado": 5.0, "scoreTotal": 58.5 },
+    { "cliente": "Priscila G.", "vendedor": "Agent Two", "data": "2026-03-22", "velocidade": 10.0, "followup": 2.0, "qualidade": 5.0, "tom": 5.0, "resultado": 5.0, "scoreTotal": 55.5 },
+    { "cliente": "Eduardo S.", "vendedor": "Agent One", "data": "2026-03-21", "velocidade": 7.0, "followup": 8.0, "qualidade": 7.0, "tom": 8.0, "resultado": 5.0, "scoreTotal": 71.0 },
+    { "cliente": "Juliana C.", "vendedor": "Agent Two", "data": "2026-03-20", "velocidade": 1.0, "followup": 4.0, "qualidade": 4.0, "tom": 5.0, "resultado": 5.0, "scoreTotal": 36.5 },
+    { "cliente": "Marcelo H.", "vendedor": "Agent One", "data": "2026-03-19", "velocidade": 10.0, "followup": 0.0, "qualidade": 6.0, "tom": 7.0, "resultado": 5.0, "scoreTotal": 59.0 },
+    { "cliente": "Tatiana L.", "vendedor": "Agent Two", "data": "2026-03-18", "velocidade": 7.0, "followup": 7.0, "qualidade": 6.0, "tom": 7.0, "resultado": 5.0, "scoreTotal": 65.5 }
+  ],
+  "insights": [
+    {
+      "tipo": "positivo",
+      "texto": "Agent One mantém excelente velocidade de resposta — 72% das conversas respondidas em até 5 minutos, referência para o time."
+    },
+    {
+      "tipo": "positivo",
+      "texto": "A taxa de conversão de 4.2% do Agent One está acima da média do setor para eventos de entretenimento (3.5%)."
+    },
+    {
+      "tipo": "atencao",
+      "texto": "Agent Two tem tempo médio de 1ª resposta de 165 min — ainda alto. Conversas sem resposta nas primeiras 2h têm 3x menos chance de conversão."
+    },
+    {
+      "tipo": "atencao",
+      "texto": "98 leads sem nenhum contato humano este mês. Revisar fila de não atendidos diariamente pode recuperar 8-12 conversões extras."
+    },
+    {
+      "tipo": "sugestao",
+      "texto": "Critério de follow-up é o mais fraco do time (média 5.4/10). Implementar lembrete automático após 6h de silêncio do cliente pode elevar o score médio em ~8 pontos."
+    }
+  ]
+}
